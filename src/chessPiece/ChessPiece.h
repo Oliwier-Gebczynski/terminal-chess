@@ -30,14 +30,43 @@ public:
     ChessPieceColor getColor() const;
     std::string getPosition() const;
     PieceType getType() const;
+
+    std::string typeToString() const;
+    void display() const;
 };
 
 class Pawn : public ChessPiece {
 public:
-    using ChessPiece::ChessPiece;
+    Pawn(ChessPieceColor color, std::string position)
+            : ChessPiece(color, std::move(position), PieceType::Pawn) {}
+};
 
-    void display() const  {
-        std::cout << "Pawn at position " << getPosition()
-                  << " of color " << (getColor() == ChessPieceColor::White ? "White" : "Black") << std::endl;
-    }
+class Bishop : public ChessPiece{
+public:
+    Bishop(ChessPieceColor color, std::string position)
+    : ChessPiece(color, std::move(position), PieceType::Bishop) {}
+};
+
+class Knight : public ChessPiece{
+public:
+    Knight(ChessPieceColor color, std::string position)
+            : ChessPiece(color, std::move(position), PieceType::Knight) {}
+};
+
+class Rook : public ChessPiece{
+public:
+    Rook(ChessPieceColor color, std::string position)
+            : ChessPiece(color, std::move(position), PieceType::Rook) {}
+};
+
+class Queen : public ChessPiece{
+public:
+    Queen(ChessPieceColor color, std::string position)
+            : ChessPiece(color, std::move(position), PieceType::Queen) {}
+};
+
+class King : public ChessPiece{
+public:
+    King(ChessPieceColor color, std::string position)
+            : ChessPiece(color, std::move(position), PieceType::King) {}
 };
