@@ -4,7 +4,8 @@
 #include <vector>
 #include <map>
 
-#include "././Board.h"
+#include "src/board/Board.h"
+#include "src/chessPiece/ChessPiece.h"
 
 
 
