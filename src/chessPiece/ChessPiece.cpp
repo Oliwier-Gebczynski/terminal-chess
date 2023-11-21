@@ -1,4 +1,4 @@
-#include "ChessPiece.h"
+#include "../../Main.h"
 
 ChessPieceColor ChessPiece::getColor() const {
     return color;

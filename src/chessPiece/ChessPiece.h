@@ -1,5 +1,4 @@
 #pragma once
-#include <utility>
 
 #include "../../Main.h"
 
@@ -33,6 +32,8 @@ public:
 
     std::string typeToString() const;
     void display() const;
+
+    ~ChessPiece() = default;
 };
 
 class Pawn : public ChessPiece {

@@ -1,4 +1,4 @@
-#include "Board.h"
+#include "../../Main.h"
 
 void Board::initializeBoard(){
     boardColors.resize(rows, std::vector<SquareColor>(cols, SquareColor::Black));

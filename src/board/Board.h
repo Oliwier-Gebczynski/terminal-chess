@@ -1,4 +1,3 @@
-#pragma once
 #include "../../Main.h"
 
 enum class SquareColor {
