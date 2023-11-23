@@ -14,6 +14,8 @@ public:
     void removePiece(const std::string& position);
 
     const std::vector<ChessPiece>& getPieces() const;
+
+    void startPosition(ChessPieceColor color);
 };
 
 class BlackPlayer : public Player {

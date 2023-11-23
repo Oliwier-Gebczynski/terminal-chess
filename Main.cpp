@@ -20,9 +20,10 @@ int main() {
     BlackPlayer B1;
     WhitePlayer W1;
 
-    B1.addPiece(Rook(ChessPieceColor::Black, "A1"));
-    W1.addPiece(Queen(ChessPieceColor::White, "C3"));
-    B1.addPiece(Pawn(ChessPieceColor::Black, "A3"));
+    B1.startPosition(ChessPieceColor::Black);
+    W1.startPosition(ChessPieceColor::White);
+
+
 
     std::cout << "Before remove ___________________________________" << std::endl;
 
@@ -34,7 +35,7 @@ int main() {
 
     std::cout << "After remove ___________________________________" << std::endl;
 
-    B1.removePiece("A1");
+    B1.removePiece("A8");
     auto blackPieces2 = B1.getPieces();
 
     for (const auto& piece: blackPieces2) {
