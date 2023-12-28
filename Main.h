@@ -24,9 +24,9 @@ enum class PieceType {
     None
 };
 
-#include "src/board/Board.h"
+class Player;
 
-
+class ChessBoard;
 
 
 

@@ -1,4 +1,5 @@
 #pragma once
+
 #include "../../Main.h"
 
 class ChessPiece {
@@ -17,8 +18,6 @@ public:
 
     std::string typeToString() const;
     void display() const;
-
-    static const ChessPiece Empty;
 
     ~ChessPiece() = default;
 };
@@ -60,4 +59,12 @@ public:
             : ChessPiece(color, std::move(position), PieceType::King) {}
 };
 
-const ChessPiece ChessPiece::Empty = ChessPiece(ChessPieceColor::None, "", PieceType::None);
+class EmptyPiece : public ChessPiece {
+public:
+    EmptyPiece()
+            : ChessPiece(ChessPieceColor::None, "", PieceType::None) {}
+};
+
+
+
+

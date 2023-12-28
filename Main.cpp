@@ -1,4 +1,6 @@
 #include "Main.h"
+#include "src/player/Player.h"
+#include "src/board/Board.h"
 
 int main() {
     Player whitePlayer(ChessPieceColor::White);
