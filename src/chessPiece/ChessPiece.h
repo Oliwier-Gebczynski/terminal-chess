@@ -1,20 +1,5 @@
+#pragma once
 #include "../../Main.h"
-
-enum class ChessPieceColor{
-    White,
-    Black,
-    None
-};
-
-enum class PieceType {
-    Pawn,
-    Rook,
-    Knight,
-    Bishop,
-    Queen,
-    King,
-    None
-};
 
 class ChessPiece {
 private:

@@ -1,7 +1,11 @@
 #include "Main.h"
 
 int main() {
-    ChessBoard game;
+    Player whitePlayer(ChessPieceColor::White);
+    Player blackPlayer(ChessPieceColor::Black);
+
+
+    ChessBoard game(whitePlayer,blackPlayer);
 
     game.displayBoard();
     return 0;

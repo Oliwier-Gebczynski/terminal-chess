@@ -8,9 +8,23 @@
 #include <algorithm>
 #include <iomanip>
 
+enum class ChessPieceColor{
+    White,
+    Black,
+    None
+};
+
+enum class PieceType {
+    Pawn,
+    Rook,
+    Knight,
+    Bishop,
+    Queen,
+    King,
+    None
+};
+
 #include "src/board/Board.h"
-#include "src/player/Player.h"
-#include "src/chessPiece/ChessPiece.h"
 
 
 

@@ -1,15 +1,18 @@
+#pragma once
 #include "../../Main.h"
+#include "../player/Player.h"
+#include "../chessPiece/ChessPiece.h"
 
 class ChessBoard {
 private:
     std::vector<ChessPiece> board_;
 
-    WhitePlayer whitePlayer_;
-    BlackPlayer blackPlayer_;
-    Player* currentPlayer_;
+    Player whitePlayer_;
+    Player blackPlayer_;
 
 public:
-    ChessBoard() : whitePlayer_(), blackPlayer_(), currentPlayer_(&whitePlayer_) {
+    ChessBoard(Player whiteColor, Player blackColor)
+            : whitePlayer_(whiteColor), blackPlayer_(blackColor) {
         initializeBoard();
     }
 
@@ -58,6 +61,7 @@ public:
     }
 
     bool isMoveValid(const std::string& from, const std::string& to) const {
+        return true;
     }
 
     bool makeMove(const std::string& from, const std::string& to) {
@@ -69,7 +73,7 @@ public:
     }
 
     bool isCheckmate(ChessPieceColor color) const {
-
+        return true;
     }
 
     void startPosition(ChessPieceColor color);
