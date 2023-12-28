@@ -1,35 +1,24 @@
-#include "../../Main.h"
+#include "../board/Board.h"
 
-void Board::initializeBoard(){
-    boardColors.resize(rows, std::vector<SquareColor>(cols, SquareColor::Black));
-
-    for (int i = 0; i < rows; ++i) {
-        for (int j = 0; j < cols; ++j) {
-            if ((i + j) % 2 == 1) {
-                boardColors[i][j] = SquareColor::White;
-            }
+void ChessBoard::startPosition(ChessPieceColor color){
+    for (char file = 'A'; file <= 'H'; file++) {
+        std::string position;
+        if (color == ChessPieceColor::Black) {
+            position = std::string(1, file) + "7";
+            board_.emplace_back(color, position, PieceType::Pawn);
+        } else if (color == ChessPieceColor::White) {
+            position = std::string(1, file) + "2";
+            board_.emplace_back(color, position, PieceType::Pawn);
         }
     }
-}
 
-SquareColor Board::getSquareColor(const std::string& position){
-    int row = position[1] - '1';
-    int col = position[0] - 'A';
-
-    if (row >= 0 && row < rows && col >= 0 && col < cols) {
-        return boardColors[row][col];
-    }
-}
-
-void Board::printChessboard() {
-    for (const auto& row : boardColors) {
-        for (const auto& color : row) {
-            if (color == SquareColor::White) {
-                std::cout << "   ";
-            } else {
-                std::cout << " ■ ";
-            }
-        }
-        std::cout << std::endl;
-    }
+    std::string backRank = (color == ChessPieceColor::Black) ? "8" : "1";
+    board_.emplace_back(color, "A" + backRank, PieceType::Rook);
+    board_.emplace_back(color, "B" + backRank, PieceType::Knight);
+    board_.emplace_back(color, "C" + backRank, PieceType::Bishop);
+    board_.emplace_back(color, "D" + backRank, PieceType::Queen);
+    board_.emplace_back(color, "E" + backRank, PieceType::King);
+    board_.emplace_back(color, "F" + backRank, PieceType::Bishop);
+    board_.emplace_back(color, "G" + backRank, PieceType::Knight);
+    board_.emplace_back(color, "H" + backRank, PieceType::Rook);
 }

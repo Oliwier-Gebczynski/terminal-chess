@@ -1,10 +1,9 @@
-#pragma once
-
 #include "../../Main.h"
 
 enum class ChessPieceColor{
     White,
-    Black
+    Black,
+    None
 };
 
 enum class PieceType {
@@ -13,7 +12,8 @@ enum class PieceType {
     Knight,
     Bishop,
     Queen,
-    King
+    King,
+    None
 };
 
 class ChessPiece {
@@ -33,6 +33,8 @@ public:
     std::string typeToString() const;
     void display() const;
 
+    static const ChessPiece Empty;
+
     ~ChessPiece() = default;
 };
 
@@ -40,6 +42,7 @@ class Pawn : public ChessPiece {
 public:
     Pawn(ChessPieceColor color, std::string position)
             : ChessPiece(color, std::move(position), PieceType::Pawn) {}
+
 };
 
 class Bishop : public ChessPiece{
@@ -71,3 +74,5 @@ public:
     King(ChessPieceColor color, std::string position)
             : ChessPiece(color, std::move(position), PieceType::King) {}
 };
+
+const ChessPiece ChessPiece::Empty = ChessPiece(ChessPieceColor::None, "", PieceType::None);

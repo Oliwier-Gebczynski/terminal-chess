@@ -1,4 +1,4 @@
-#include "../../Main.h"
+#include "ChessPiece.h"
 
 ChessPieceColor ChessPiece::getColor() const {
     return color;
@@ -35,3 +35,4 @@ void ChessPiece::display() const{
     std::cout << typeToString() << " at position " << getPosition()
               << " of color " << (getColor() == ChessPieceColor::White ? "White" : "Black") << std::endl;
 }
+
