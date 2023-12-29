@@ -4,13 +4,10 @@
 
 #include "../../Main.h"
 
-#define ANSI_RESET   "\033[0m"
-#define ANSI_BLACK   "\033[30m"
-#define ANSI_RED     "\033[31m"
-
 class ChessBoard {
 private:
     std::vector<ChessPiece> board_;
+    bool isInitialized_;
 
     Player whitePlayer_;
     Player blackPlayer_;
@@ -22,8 +19,15 @@ public:
     }
 
     void initializeBoard() {
-        startPosition(ChessPieceColor::White);
-        startPosition(ChessPieceColor::Black);
+        if (!isInitialized_) {
+            for (auto& piece : board_) {
+                piece = EmptyPiece();
+            }
+
+            startPosition(ChessPieceColor::Black);
+            startPosition(ChessPieceColor::White);
+            isInitialized_ = true;
+        }
     }
 
     void displayBoard() const;

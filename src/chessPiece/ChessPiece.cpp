@@ -36,3 +36,21 @@ void ChessPiece::display() const{
               << " of color " << (getColor() == ChessPieceColor::White ? "White" : "Black") << std::endl;
 }
 
+std::string ChessPiece::typeToSymbol() const {
+    switch (type) {
+        case PieceType::Pawn:
+            return "P";
+        case PieceType::Bishop:
+            return "B";
+        case PieceType::Knight:
+            return "N";
+        case PieceType::Rook:
+            return "R";
+        case PieceType::Queen:
+            return "Q";
+        case PieceType::King:
+            return "K";
+        default:
+            return " ";
+    }
+}

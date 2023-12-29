@@ -17,7 +17,9 @@ public:
     PieceType getType() const;
 
     std::string typeToString() const;
+    std::string typeToSymbol() const;
     void display() const;
+
 
     ~ChessPiece() = default;
 };

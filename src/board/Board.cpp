@@ -3,13 +3,15 @@
 void ChessBoard::startPosition(ChessPieceColor color){
     for (char file = 'A'; file <= 'H'; file++) {
         std::string position;
+        std::string backRank = (color == ChessPieceColor::Black) ? "8" : "1";
+
         if (color == ChessPieceColor::Black) {
             position = std::string(1, file) + "7";
-            board_.emplace_back(color, position, PieceType::Pawn);
         } else if (color == ChessPieceColor::White) {
             position = std::string(1, file) + "2";
-            board_.emplace_back(color, position, PieceType::Pawn);
         }
+
+        board_.emplace_back(color, position, PieceType::Pawn);
     }
 
     std::string backRank = (color == ChessPieceColor::Black) ? "8" : "1";
@@ -26,28 +28,44 @@ void ChessBoard::startPosition(ChessPieceColor color){
 void ChessBoard::displayBoard() const {
     const int boardSize = 8;
 
+    std::cout << "  ";
+    for (char col = 'A'; col <= 'H'; ++col) {
+        std::cout << std::setw(4) << col;
+    }
+    std::cout << "\n";
+
     for (int row = boardSize; row >= 1; --row) {
+        std::cout << row << " ";
+
         for (int col = 1; col <= boardSize; ++col) {
-            const ChessPiece& piece = board_[(row - 1) * boardSize + (col - 1)];
-
-            // Ustawienie koloru czcionki na podstawie koloru figury
-            if (piece.getColor() == ChessPieceColor::Black) {
-                std::cout << ANSI_BLACK;
-            } else {
-                std::cout << ANSI_RED;
+            const ChessPiece* piece = nullptr;
+            for (const auto& p : board_) {
+                if (p.getPosition() == std::string(1, 'A' + col - 1) + std::to_string(row)) {
+                    piece = &p;
+                    break;
+                }
             }
 
-            // Wyświetlanie figury na danym polu
-            if (piece.getType() == PieceType::None) {
-                std::cout << " ";  // Puste pole
+            if ((row + col) % 2 == 0) {
+                std::cout << "\033[48;2;200;200;200m";
             } else {
-                std::cout << piece.typeToString();
+                std::cout << "\033[48;2;255;255;255m";
             }
 
-            std::cout << ANSI_RESET;  // Resetowanie koloru czcionki
+            if (piece) {
+                if (piece->getColor() == ChessPieceColor::Black) {
+                    std::cout << "\033[38;2;0;0;0m";
+                } else {
+                    std::cout << "\033[38;2;255;0;0m";
+                }
+                std::cout << std::setw(4) << piece->typeToSymbol();
+            } else {
+                std::cout << std::setw(4) << " ";
+            }
+
+            std::cout << "\033[0m";
         }
 
         std::cout << "\n";
     }
-
 }
