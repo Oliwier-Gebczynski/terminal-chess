@@ -29,6 +29,18 @@ public:
     Pawn(ChessPieceColor color, std::string position)
             : ChessPiece(color, std::move(position), PieceType::Pawn) {}
 
+            bool isMoveValid(const std::string& to) const {
+                int fromFile = getPosition()[0] - 'A';
+                int fromRank = getPosition()[1] - '1';
+                int toFile = to[0] - 'A';
+                int toRank = to[1] - '1';
+
+                if (getColor() == ChessPieceColor::White) {
+                    return (toRank == fromRank + 1) && (toFile == fromFile);
+                } else {
+                    return (toRank == fromRank - 1) && (toFile == fromFile);
+                }
+    }
 };
 
 class Bishop : public ChessPiece{
