@@ -10,5 +10,17 @@ int main() {
     ChessBoard game(whitePlayer,blackPlayer);
 
     game.displayBoard();
+
+    game.movePiece("A2", "A4");
+
+    game.displayBoard();
+
+    game.movePiece("B7", "B5");
+
+    game.displayBoard();
+
+    game.movePiece("A4", "B5");
+
+    game.displayBoard();
     return 0;
 }

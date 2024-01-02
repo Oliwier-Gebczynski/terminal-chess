@@ -20,6 +20,8 @@ public:
     std::string typeToSymbol() const;
     void display() const;
 
+    void setPosition(const std::string& newPosition);
+    bool isMoveValid(const ChessPiece& piece, const std::string& to, const ChessBoard& board) const;
 
     ~ChessPiece() = default;
 };
@@ -28,19 +30,6 @@ class Pawn : public ChessPiece {
 public:
     Pawn(ChessPieceColor color, std::string position)
             : ChessPiece(color, std::move(position), PieceType::Pawn) {}
-
-            bool isMoveValid(const std::string& to) const {
-                int fromFile = getPosition()[0] - 'A';
-                int fromRank = getPosition()[1] - '1';
-                int toFile = to[0] - 'A';
-                int toRank = to[1] - '1';
-
-                if (getColor() == ChessPieceColor::White) {
-                    return (toRank == fromRank + 1) && (toFile == fromFile);
-                } else {
-                    return (toRank == fromRank - 1) && (toFile == fromFile);
-                }
-    }
 };
 
 class Bishop : public ChessPiece{
@@ -52,31 +41,31 @@ public:
 class Knight : public ChessPiece{
 public:
     Knight(ChessPieceColor color, std::string position)
-            : ChessPiece(color, std::move(position), PieceType::Knight) {}
+    : ChessPiece(color, std::move(position), PieceType::Knight) {}
 };
 
 class Rook : public ChessPiece{
 public:
     Rook(ChessPieceColor color, std::string position)
-            : ChessPiece(color, std::move(position), PieceType::Rook) {}
+    : ChessPiece(color, std::move(position), PieceType::Rook) {}
 };
 
 class Queen : public ChessPiece{
 public:
     Queen(ChessPieceColor color, std::string position)
-            : ChessPiece(color, std::move(position), PieceType::Queen) {}
+    : ChessPiece(color, std::move(position), PieceType::Queen) {}
 };
 
 class King : public ChessPiece{
 public:
     King(ChessPieceColor color, std::string position)
-            : ChessPiece(color, std::move(position), PieceType::King) {}
+    : ChessPiece(color, std::move(position), PieceType::King) {}
 };
 
 class EmptyPiece : public ChessPiece {
 public:
     EmptyPiece()
-            : ChessPiece(ChessPieceColor::None, "", PieceType::None) {}
+    : ChessPiece(ChessPieceColor::None, "", PieceType::None) {}
 };
 
 

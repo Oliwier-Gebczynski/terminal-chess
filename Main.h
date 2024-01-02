@@ -7,6 +7,8 @@
 #include <memory>
 #include <algorithm>
 #include <iomanip>
+#include <optional>
+#include <cmath>
 
 enum class ChessPieceColor{
     White,
@@ -25,7 +27,6 @@ enum class PieceType {
 };
 
 class Player;
-
 class ChessBoard;
 
 
