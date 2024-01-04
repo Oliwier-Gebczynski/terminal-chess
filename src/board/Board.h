@@ -20,11 +20,13 @@ public:
 
     void initializeBoard();
     void startPosition(ChessPieceColor color);
-    const std::vector<ChessPiece>& getBoard() const;
+    std::vector<ChessPiece>& getBoard();
     void displayBoard() const;
 
-    const ChessPiece & getChessPieceAt(const std::string& position) const;
-    bool isMoveValid(const std::string& from, const std::string& to) const;
+    ChessPiece& getChessPieceAt(const std::string& position);
+    const ChessPiece& getChessPieceAt(const std::string& position) const;
+
+    bool isMoveValid(const std::string& from, const std::string& to);
     void movePiece(const std::string& from, const std::string& to);
 
     bool isCheckmate(ChessPieceColor color) const;

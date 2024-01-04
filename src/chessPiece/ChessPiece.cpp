@@ -60,37 +60,41 @@ std::string ChessPiece::typeToSymbol() const {
     }
 }
 
-bool ChessPiece::isMoveValid(const ChessPiece& piece, const std::string& to, const ChessBoard& board) const{
-
-    if(piece.getType() == PieceType::Pawn){
-        int rankDiff = std::abs(to[1] - getPosition()[1]);
-        int fileDiff = std::abs(to[0] - getPosition()[0]);
-
-        if (getColor() == ChessPieceColor::White) { // Białe pionki poruszają się do góry planszy (rosnący numer wiersza)
-            if (rankDiff == 1 && fileDiff == 0) {
-                return true;
-            } else if (rankDiff == 2 && fileDiff == 0 && getPosition()[1] == '2') {
-                return true;
-            } else if (rankDiff == 1 && fileDiff == 1) {
-                const ChessPiece& targetPiece = board.getChessPieceAt(to);
-                return targetPiece.getColor() == ChessPieceColor::Black;
-            }
-        }
-
-        else if (getColor() == ChessPieceColor::Black) { // Czarne pionki poruszają się w dół planszy (malejący numer wiersza)
-            if (rankDiff == 1 && fileDiff == 0) {
-                return true;
-            } else if (rankDiff == 2 && fileDiff == 0 && getPosition()[1] == '7') {
-                return true;
-            } else if (rankDiff == 1 && fileDiff == 1) {
-                const ChessPiece& targetPiece = board.getChessPieceAt(to);
-                return targetPiece.getColor() == ChessPieceColor::White;
-            }
-        }
-    }
-
-
+bool ChessPiece::isMoveValid(const ChessPiece& piece, const ChessPiece& targetPiece, const ChessBoard& board) const{
     return false;
 }
 
 
+bool Pawn::isMoveValid(const ChessPiece &piece, const ChessPiece &targetPiece, const ChessBoard &board) const {
+    // Sprawdź, czy ruch pionka jest dozwolony
+    int deltaRank = (piece.getColor() == ChessPieceColor::White) ? 1 : -1;
+
+    // Sprawdź, czy ruch do przodu jest o jedno lub dwa pola
+    if ((targetPiece.getPosition()[1] == piece.getPosition()[1] + deltaRank &&
+         targetPiece.getPosition()[0] == piece.getPosition()[0]) ||
+        ((piece.getPosition()[1] == '2' && piece.getColor() == ChessPieceColor::White) ||
+         (piece.getPosition()[1] == '7' && piece.getColor() == ChessPieceColor::Black)) &&
+        targetPiece.getPosition()[1] == piece.getPosition()[1] + 2 * deltaRank &&
+        targetPiece.getPosition()[0] == piece.getPosition()[0]) {
+
+        // Sprawdź, czy docelowe pole jest puste
+        if (targetPiece.getType() == PieceType::None) {
+            return true;
+        }
+    }
+
+    // Sprawdź, czy to pole docelowe to przekątne bicie
+    if (std::abs(targetPiece.getPosition()[0] - piece.getPosition()[0]) == 1 &&
+        targetPiece.getPosition()[1] == piece.getPosition()[1] + deltaRank &&
+        targetPiece.getType() != PieceType::None &&
+        targetPiece.getColor() != piece.getColor()) {
+        return true;
+    }
+
+    // Wszystkie inne przypadki są niepoprawne
+    return false;
+}
+
+void Pawn::setPosition(const std::string &newPosition) {
+    ChessPiece::setPosition(newPosition);
+}

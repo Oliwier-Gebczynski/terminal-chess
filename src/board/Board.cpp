@@ -2,17 +2,13 @@
 
 void ChessBoard::initializeBoard() {
     if (!isInitialized_) {
-        for (auto& piece : board_) {
-            piece = EmptyPiece();
-        }
-
         startPosition(ChessPieceColor::Black);
         startPosition(ChessPieceColor::White);
         isInitialized_ = true;
     }
 }
 
-const std::vector<ChessPiece>& ChessBoard::getBoard() const {
+std::vector<ChessPiece>& ChessBoard::getBoard(){
     return board_;
 }
 
@@ -26,7 +22,6 @@ void ChessBoard::startPosition(ChessPieceColor color){
         } else if (color == ChessPieceColor::White) {
             position = std::string(1, file) + "2";
         }
-
         board_.emplace_back(color, position, PieceType::Pawn);
     }
 
@@ -86,6 +81,14 @@ void ChessBoard::displayBoard() const {
     }
 }
 
+ChessPiece& ChessBoard::getChessPieceAt(const std::string& position) {
+    for (ChessPiece& piece : board_) {
+        if (piece.getPosition() == position) {
+            return piece;
+        }
+    }
+}
+
 const ChessPiece& ChessBoard::getChessPieceAt(const std::string& position) const {
     for (const ChessPiece& piece : board_) {
         if (piece.getPosition() == position) {
@@ -94,20 +97,37 @@ const ChessPiece& ChessBoard::getChessPieceAt(const std::string& position) const
     }
 }
 
-bool ChessBoard::isMoveValid(const std::string& from, const std::string& to) const {
-    ChessPiece piece = getChessPieceAt(from);
-    return piece.isMoveValid(piece, to, *this);
+bool ChessBoard::isMoveValid(const std::string& from, const std::string& to) {
+    ChessPiece& piece = getChessPieceAt(from);
+    ChessPiece& targetPiece = getChessPieceAt(to);
+    return piece.isMoveValid(piece, targetPiece, *this);
 }
 
 void ChessBoard::movePiece(const std::string& from, const std::string& to){
-    ChessPiece piece = getChessPieceAt(from);  // Używamy referencji
-    ChessPiece targetPiece = getChessPieceAt(to);  // Używamy referencji
+    ChessPiece* piece = &getChessPieceAt(from);
+    ChessPiece* targetPiece = &getChessPieceAt(to);
 
-    if (piece.getType() == PieceType::Pawn) {
-        if (piece.isMoveValid(piece, to, *this)) {
-            if (targetPiece.getType() == PieceType::None || targetPiece.getColor() != piece.getColor()) {
-                piece.setPosition(to);
-                targetPiece.setPosition(from);
+    auto* tempTargetPiece = new EmptyPiece(to);
+
+    //to po to zeby wykryc czy zaiwera jakis obiekt jak nie to stworz EmptyPiece
+    if(targetPiece == nullptr) {
+        targetPiece = tempTargetPiece;
+    }
+
+    std::cout << targetPiece->getPosition();
+
+    if (piece->getType() == PieceType::Pawn) {
+        if (piece->isMoveValid(*piece, *targetPiece, *this)) {
+            if (targetPiece->getType() == PieceType::None || targetPiece->getColor() != piece->getColor()) {
+                piece->setPosition(to);
+
+                if (targetPiece->getType() != PieceType::None) {
+                    std::cout << "Piece captured at " << to << std::endl;
+                    board_.erase(std::remove_if(board_.begin(), board_.end(), [targetPiece](const ChessPiece& piece) {
+                        return &piece == targetPiece;
+                    }), board_.end());
+                }
+
                 std::cout << "Piece moved from " << from << " to " << to << std::endl;
             } else {
                 std::cerr << "Invalid move: Target position is occupied by own piece" << std::endl;
@@ -115,6 +135,8 @@ void ChessBoard::movePiece(const std::string& from, const std::string& to){
         } else {
             std::cerr << "Invalid move for piece from " << from << " to " << to << std::endl;
         }
+    } else {
+        std::cerr << "Invalid move: Source position does not contain a pawn" << std::endl;
     }
 }
 

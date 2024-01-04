@@ -9,6 +9,7 @@ private:
     PieceType type;
 
 public:
+public:
     ChessPiece(ChessPieceColor color, std::string position, PieceType type)
             : color(color), position(std::move(position)), type(type) {}
 
@@ -20,16 +21,21 @@ public:
     std::string typeToSymbol() const;
     void display() const;
 
-    void setPosition(const std::string& newPosition);
-    bool isMoveValid(const ChessPiece& piece, const std::string& to, const ChessBoard& board) const;
+    virtual void setPosition(const std::string& newPosition);
+    virtual bool isMoveValid(const ChessPiece& piece, const ChessPiece& targetPiece, const ChessBoard& board) const;
 
-    ~ChessPiece() = default;
+    virtual ~ChessPiece() = default;
 };
 
 class Pawn : public ChessPiece {
 public:
     Pawn(ChessPieceColor color, std::string position)
             : ChessPiece(color, std::move(position), PieceType::Pawn) {}
+
+    void setPosition(const std::string& newPosition) override;
+
+    // Przesłonięcie funkcji isMoveValid
+    bool isMoveValid(const ChessPiece& piece, const ChessPiece& targetPiece, const ChessBoard& board) const override;
 };
 
 class Bishop : public ChessPiece{
@@ -64,8 +70,8 @@ public:
 
 class EmptyPiece : public ChessPiece {
 public:
-    EmptyPiece()
-    : ChessPiece(ChessPieceColor::None, "", PieceType::None) {}
+    EmptyPiece(const std::string& position)
+    : ChessPiece(ChessPieceColor::None, position, PieceType::None) {}
 };
 
 
