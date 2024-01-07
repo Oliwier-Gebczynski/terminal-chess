@@ -23,12 +23,13 @@ public:
     std::vector<ChessPiece>& getBoard();
     void displayBoard() const;
 
-    ChessPiece& getChessPieceAt(const std::string& position);
-    const ChessPiece& getChessPieceAt(const std::string& position) const;
+    std::optional<std::reference_wrapper<ChessPiece>> getChessPieceAt(const std::string& position);
+    const std::optional<ChessPiece> getChessPieceAt(const std::string& position) const;
 
     bool isMoveValid(const std::string& from, const std::string& to);
     void movePiece(const std::string& from, const std::string& to);
 
+    void movePawn(ChessPiece& piece, ChessPiece& targetPiece, const std::string& from, const std::string& to);
     bool isCheckmate(ChessPieceColor color) const;
 
 };

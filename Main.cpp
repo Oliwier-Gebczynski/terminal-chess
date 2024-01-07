@@ -11,11 +11,11 @@ int main() {
 
     game.displayBoard();
 
-    game.movePiece("A2", "A3");
+    game.movePiece("A2", "A4");
 
     game.displayBoard();
 
-    game.movePiece("B7", "B6");
+    game.movePiece("B7", "B5");
 
     game.displayBoard();
 
