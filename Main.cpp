@@ -22,5 +22,13 @@ int main() {
     game.movePiece("A4", "B5");
 
     game.displayBoard();
+
+    game.movePiece("A1", "A7");
+
+    game.displayBoard();
+
+    game.movePiece("A7", "B8");
+
+    game.displayBoard();
     return 0;
 }

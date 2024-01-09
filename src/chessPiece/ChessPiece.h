@@ -21,21 +21,16 @@ public:
     std::string typeToSymbol() const;
     void display() const;
 
-    virtual void setPosition(const std::string& newPosition);
-    virtual bool isMoveValid(const ChessPiece& piece, const ChessPiece& targetPiece, const ChessBoard& board) const;
+    void setPosition(const std::string& newPosition);
+    bool isMoveValid(const ChessPiece& piece, const ChessPiece& targetPiece, const ChessBoard& board) const;
 
-    virtual ~ChessPiece() = default;
+    ~ChessPiece() = default;
 };
 
 class Pawn : public ChessPiece {
 public:
     Pawn(ChessPieceColor color, std::string position)
             : ChessPiece(color, std::move(position), PieceType::Pawn) {}
-
-    void setPosition(const std::string& newPosition) override;
-
-    // Przesłonięcie funkcji isMoveValid
-    bool isMoveValid(const ChessPiece& piece, const ChessPiece& targetPiece, const ChessBoard& board) const override;
 };
 
 class Bishop : public ChessPiece{

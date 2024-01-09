@@ -29,7 +29,9 @@ public:
     bool isMoveValid(const std::string& from, const std::string& to);
     void movePiece(const std::string& from, const std::string& to);
 
-    void movePawn(ChessPiece& piece, ChessPiece& targetPiece, const std::string& from, const std::string& to);
+    bool isPieceInPath(const std::string& from, const std::string& to) const;
+
+    void moveThis(ChessPiece& piece, ChessPiece& targetPiece, const std::string& from, const std::string& to);
     bool isCheckmate(ChessPieceColor color) const;
 
 };

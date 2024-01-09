@@ -60,41 +60,61 @@ std::string ChessPiece::typeToSymbol() const {
     }
 }
 
-// do poprawy to poniewaz on uzywa z ChessPiece a nie isMoveValid
 bool ChessPiece::isMoveValid(const ChessPiece& piece, const ChessPiece& targetPiece, const ChessBoard& board) const{
-    return true;
-}
+    if(piece.getType() == PieceType::Pawn){
+        int deltaRank = (piece.getColor() == ChessPieceColor::White) ? 1 : -1;
 
+        std::cout << "Dziala ta funkcja" << std::endl;
 
-bool Pawn::isMoveValid(const ChessPiece& piece, const ChessPiece& targetPiece, const ChessBoard& board) const {
-    int deltaRank = (piece.getColor() == ChessPieceColor::White) ? 1 : -1;
-
-    // Sprawdź, czy ruch pionka jest dozwolony o jedno pole do przodu
-    if (targetPiece.getPosition()[1] == piece.getPosition()[1] + deltaRank &&
-        targetPiece.getPosition()[0] == piece.getPosition()[0] &&
-        (targetPiece.getType() == PieceType::None || targetPiece.getColor() != piece.getColor())) {
-        return true;
-    }
-
-    // Sprawdź, czy to jest pierwszy ruch pionka o dwa pola do przodu
-    if (piece.getPosition()[1] == (piece.getColor() == ChessPieceColor::White) ? '2' : '7' && targetPiece.getPosition()[1] == piece.getPosition()[1] + 2 * deltaRank &&
-    targetPiece.getPosition()[0] == piece.getPosition()[0] && targetPiece.getType() == PieceType::None) {
-        return true;
-    }
-
-    // Sprawdź, czy ruch pionka jest dozwolony do przodu i w ukos
-    if (targetPiece.getPosition()[1] == piece.getPosition()[1] + deltaRank &&
-        targetPiece.getPosition()[0] == piece.getPosition()[0] + 1 ||
-        targetPiece.getPosition()[0] == piece.getPosition()[0] - 1) {
-        if (targetPiece.getType() != PieceType::None && targetPiece.getColor() != piece.getColor()) {
+        // Sprawdź, czy ruch pionka jest dozwolony o jedno pole do przodu
+        if (targetPiece.getPosition()[1] == piece.getPosition()[1] + deltaRank &&
+            targetPiece.getPosition()[0] == piece.getPosition()[0] &&
+            (targetPiece.getType() == PieceType::None || targetPiece.getColor() != piece.getColor())) {
             return true;
         }
+
+        // Sprawdź, czy to jest pierwszy ruch pionka o dwa pola do przodu
+        if (piece.getPosition()[1] == (piece.getColor() == ChessPieceColor::White) ? '2' : '7' && targetPiece.getPosition()[1] == piece.getPosition()[1] + 2 * deltaRank &&
+                                                                                           targetPiece.getPosition()[0] == piece.getPosition()[0] && targetPiece.getType() == PieceType::None) {
+            return true;
+        }
+
+        // Sprawdź, czy ruch pionka jest dozwolony do przodu i w ukos
+        if (targetPiece.getPosition()[1] == piece.getPosition()[1] + deltaRank &&
+            targetPiece.getPosition()[0] == piece.getPosition()[0] + 1 ||
+            targetPiece.getPosition()[0] == piece.getPosition()[0] - 1) {
+            if (targetPiece.getType() != PieceType::None && targetPiece.getColor() != piece.getColor()) {
+                return true;
+            }
+        }
+
+        // Wszystkie inne przypadki są niepoprawne
+        return false;
+    }else if (piece.getType() == PieceType::Rook || piece.getType() == PieceType::Bishop || piece.getType() == PieceType::Queen) {
+        int fileDiff = std::abs(targetPiece.getPosition()[0] - piece.getPosition()[0]);
+        int rankDiff = std::abs(targetPiece.getPosition()[1] - piece.getPosition()[1]);
+
+        if ((fileDiff > 0 && rankDiff == 0) || (fileDiff == 0 && rankDiff > 0) || (fileDiff > 0 && rankDiff > 0 && fileDiff == rankDiff)) {
+            // Check if there is a piece in the path for diagonal moves
+            if (fileDiff > 0 && rankDiff > 0) {
+                int fileDir = (targetPiece.getPosition()[0] > piece.getPosition()[0]) ? 1 : -1;
+                int rankDir = (targetPiece.getPosition()[1] > piece.getPosition()[1]) ? 1 : -1;
+
+                for (int i = 1; i < fileDiff; ++i) {
+                    char file = piece.getPosition()[0] + i * fileDir;
+                    char rank = piece.getPosition()[1] + i * rankDir;
+
+                    if (board.getChessPieceAt(std::string(1, file) + std::string(1, rank)).has_value()) {
+                        return false;  // There is a piece in the diagonal path
+                    }
+                }
+            }
+
+            return targetPiece.getColor() != piece.getColor();
+        }
+
+        return false;  // Invalid move for rook, bishop, or queen
     }
 
-    // Wszystkie inne przypadki są niepoprawne
     return false;
-}
-
-void Pawn::setPosition(const std::string &newPosition) {
-    ChessPiece::setPosition(newPosition);
 }

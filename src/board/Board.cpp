@@ -127,24 +127,18 @@ void ChessBoard::movePiece(const std::string& from, const std::string& to){
     if (!targetPieceOpt.has_value()) {
         ChessPiece& piece = *pieceOpt;
         ChessPiece targetPiece = EmptyPiece(to);
-        if (piece.getType() == PieceType::Pawn) {
-            movePawn(piece, targetPiece, from, to);
-        }
+
+        moveThis(piece, targetPiece, from, to);
     } else {
         ChessPiece& piece = *pieceOpt;
         ChessPiece& targetPiece = *targetPieceOpt;
-        if (piece.getType() == PieceType::Pawn) {
-            movePawn(piece, targetPiece, from, to);
-        }
+
+        moveThis(piece, targetPiece, from, to);
     }
 }
 
-bool ChessBoard::isCheckmate(ChessPieceColor color) const {
-    return true;
-}
-
-void ChessBoard::movePawn(ChessPiece& piece, ChessPiece& targetPiece, const std::string& from, const std::string& to) {
-    if (isMoveValid(from, to)) {
+void ChessBoard::moveThis(ChessPiece& piece, ChessPiece& targetPiece, const std::string& from, const std::string& to) {
+    if (piece.isMoveValid(piece, targetPiece, *this)) {
         if (targetPiece.getType() == PieceType::None || targetPiece.getColor() != piece.getColor()) {
             piece.setPosition(to);
 
@@ -164,4 +158,41 @@ void ChessBoard::movePawn(ChessPiece& piece, ChessPiece& targetPiece, const std:
     }
 }
 
+bool ChessBoard::isCheckmate(ChessPieceColor color) const {
+    return true;
+}
 
+bool ChessBoard::isPieceInPath(const std::string& from, const std::string& to) const {
+    char fromFile = from[0];
+    char fromRank = from[1];
+    char toFile = to[0];
+    char toRank = to[1];
+
+    int fileDiff = std::abs(toFile - fromFile);
+    int rankDiff = std::abs(toRank - fromRank);
+
+    int fileDir = (toFile > fromFile) ? 1 : (toFile < fromFile) ? -1 : 0;
+    int rankDir = (toRank > fromRank) ? 1 : (toRank < fromRank) ? -1 : 0;
+
+    char file = fromFile;
+    char rank = fromRank;
+
+    for (int i = 0; i < std::max(fileDiff, rankDiff); ++i) {
+        // Move to the next square
+        file += fileDir;
+        rank += rankDir;
+
+        // Check if the square is within the bounds of the chessboard
+        if (file < 'A' || file > 'H' || rank < '1' || rank > '8') {
+            return true;  // Out of bounds
+        }
+
+        // Check if there is a piece in the current square
+        auto piece = getChessPieceAt(std::string(1, file) + std::string(1, rank));
+        if (piece) {
+            return true;  // Piece in the path
+        }
+    }
+
+    return false;  // No piece in the path
+}
