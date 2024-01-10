@@ -162,7 +162,7 @@ bool ChessBoard::isCheckmate(ChessPieceColor color) const {
     return true;
 }
 
-bool ChessBoard::isPieceInPath(const std::string& from, const std::string& to) const {
+bool ChessBoard::isStraightMoveValid(const std::string& from, const std::string& to) const {
     char fromFile = from[0];
     char fromRank = from[1];
     char toFile = to[0];
@@ -184,15 +184,58 @@ bool ChessBoard::isPieceInPath(const std::string& from, const std::string& to) c
 
         // Check if the square is within the bounds of the chessboard
         if (file < 'A' || file > 'H' || rank < '1' || rank > '8') {
-            return true;  // Out of bounds
+            return false;  // Out of bounds
         }
 
         // Check if there is a piece in the current square
-        auto piece = getChessPieceAt(std::string(1, file) + std::string(1, rank));
-        if (piece) {
+        if (getChessPieceAt(std::string(1, file) + std::string(1, rank))) {
             return true;  // Piece in the path
         }
     }
 
     return false;  // No piece in the path
 }
+
+bool ChessBoard::isDiagonalMoveValid(const std::string& from, const std::string& to) const {
+    char fromFile = from[0];
+    char fromRank = from[1];
+    char toFile = to[0];
+    char toRank = to[1];
+
+    int fileDiff = std::abs(toFile - fromFile);
+    int rankDiff = std::abs(toRank - fromRank);
+
+    // Sprawdź, czy ruch jest po ukosie
+    if (fileDiff != rankDiff) {
+        return false;
+    }
+
+    int fileDir = (toFile > fromFile) ? 1 : (toFile < fromFile) ? -1 : 0;
+    int rankDir = (toRank > fromRank) ? 1 : (toRank < fromRank) ? -1 : 0;
+
+    char file = fromFile;
+    char rank = fromRank;
+
+    for (int i = 0; i < fileDiff; ++i) {
+        // Przesuwaj się po ukosie
+        file += fileDir;
+        rank += rankDir;
+
+        // Sprawdź, czy pole jest w granicach szachownicy
+        if (file < 'A' || file > 'H' || rank < '1' || rank > '8') {
+            return false;  // Poza granicami
+        }
+
+        // Sprawdź, czy na polu znajduje się figura
+        if (getChessPieceAt(std::string(1, file) + std::string(1, rank))) {
+            if (file == toFile && rank == toRank) {
+                return true;  // Doszliśmy do celu bez przeszkód
+            } else {
+                return false;  // Figura na drodze
+            }
+        }
+    }
+
+    return true;  // Brak figury na drodze
+}
+

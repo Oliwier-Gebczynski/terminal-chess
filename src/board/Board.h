@@ -34,4 +34,7 @@ public:
     void moveThis(ChessPiece& piece, ChessPiece& targetPiece, const std::string& from, const std::string& to);
     bool isCheckmate(ChessPieceColor color) const;
 
+    bool isDiagonalMoveValid(const std::string &from, const std::string &to) const;
+
+    bool isStraightMoveValid(const std::string &from, const std::string &to) const;
 };

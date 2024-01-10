@@ -11,24 +11,29 @@ int main() {
 
     game.displayBoard();
 
-    game.movePiece("A2", "A4");
+    game.movePiece("B2", "B4");
 
     game.displayBoard();
 
-    game.movePiece("B7", "B5");
+    game.movePiece("C1", "A3");
 
     game.displayBoard();
 
-    game.movePiece("A4", "B5");
+    game.movePiece("B4", "B5");
 
     game.displayBoard();
 
-    game.movePiece("A1", "A7");
+    game.movePiece("A3", "E7");
 
     game.displayBoard();
 
-    game.movePiece("A7", "B8");
+    game.movePiece("E7", "F8");
 
     game.displayBoard();
+
+    int somexd;
+
+    somexd = 0;
+
     return 0;
 }

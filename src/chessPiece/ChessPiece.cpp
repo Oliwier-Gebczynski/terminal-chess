@@ -90,30 +90,35 @@ bool ChessPiece::isMoveValid(const ChessPiece& piece, const ChessPiece& targetPi
 
         // Wszystkie inne przypadki są niepoprawne
         return false;
-    }else if (piece.getType() == PieceType::Rook || piece.getType() == PieceType::Bishop || piece.getType() == PieceType::Queen) {
-        int fileDiff = std::abs(targetPiece.getPosition()[0] - piece.getPosition()[0]);
-        int rankDiff = std::abs(targetPiece.getPosition()[1] - piece.getPosition()[1]);
+    } else if (getType() == PieceType::Rook) {
+        // W tym przypadku, dla wieży, sprawdź ruch w pionie lub poziomie, ale nie oba jednocześnie
+        int fromFile = piece.getPosition()[0];
+        int fromRank = piece.getPosition()[1];
+        int toFile = targetPiece.getPosition()[0];
+        int toRank = targetPiece.getPosition()[1];
 
-        if ((fileDiff > 0 && rankDiff == 0) || (fileDiff == 0 && rankDiff > 0) || (fileDiff > 0 && rankDiff > 0 && fileDiff == rankDiff)) {
-            // Check if there is a piece in the path for diagonal moves
-            if (fileDiff > 0 && rankDiff > 0) {
-                int fileDir = (targetPiece.getPosition()[0] > piece.getPosition()[0]) ? 1 : -1;
-                int rankDir = (targetPiece.getPosition()[1] > piece.getPosition()[1]) ? 1 : -1;
-
-                for (int i = 1; i < fileDiff; ++i) {
-                    char file = piece.getPosition()[0] + i * fileDir;
-                    char rank = piece.getPosition()[1] + i * rankDir;
-
-                    if (board.getChessPieceAt(std::string(1, file) + std::string(1, rank)).has_value()) {
-                        return false;  // There is a piece in the diagonal path
-                    }
-                }
-            }
-
-            return targetPiece.getColor() != piece.getColor();
+        if ((fromFile == toFile && fromRank != toRank) || (fromRank == toRank && fromFile != toFile)) {
+            return board.isStraightMoveValid(piece.getPosition(), targetPiece.getPosition());
+        } else {
+            return false;
         }
+    } else if (getType() == PieceType::Bishop) {
+        // Check for valid bishop moves
+        int fromFile = piece.getPosition()[0];
+        int fromRank = piece.getPosition()[1];
+        int toFile = targetPiece.getPosition()[0];
+        int toRank = targetPiece.getPosition()[1];
 
-        return false;  // Invalid move for rook, bishop, or queen
+        if (std::abs(toFile - fromFile) == std::abs(toRank - fromRank)) {
+            return board.isDiagonalMoveValid(piece.getPosition(), targetPiece.getPosition());
+        } else {
+            // Invalid bishop move
+            return false;
+        }
+    } else if (getType() == PieceType::Queen) {
+            // Dla królowej, sprawdź zarówno prosty, jak i ukosny ruch, ale bez mieszania ich
+            return (board.isStraightMoveValid(piece.getPosition(), targetPiece.getPosition()) && !board.isDiagonalMoveValid(piece.getPosition(), targetPiece.getPosition())) ||
+                   (board.isDiagonalMoveValid(piece.getPosition(), targetPiece.getPosition()) && !board.isStraightMoveValid(piece.getPosition(), targetPiece.getPosition()));
     }
 
     return false;
