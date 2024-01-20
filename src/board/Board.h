@@ -29,11 +29,18 @@ public:
     bool isMoveValid(const std::string& from, const std::string& to);
     void movePiece(const std::string& from, const std::string& to);
 
-    bool isPieceInPath(const std::string& from, const std::string& to) const;
 
     void moveThis(ChessPiece& piece, ChessPiece& targetPiece, const std::string& from, const std::string& to);
     bool isCheckmate(ChessPieceColor color) const;
 
     bool isDiagonalMoveValid(const std::string &from, const std::string &to) const;
     bool isStraightMoveValid(const std::string &from, const std::string &to) const;
+
+    bool isInCheck(ChessPieceColor color) const;
+
+    bool isKnightMoveValid(const std::string &from, const std::string &to) const;
+
+    bool isSquareBlocked(const std::string &from, const std::string &to) const;
+
+    std::optional<std::reference_wrapper<const ChessPiece>> findKing(ChessPieceColor color) const;
 };

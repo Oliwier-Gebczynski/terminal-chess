@@ -64,8 +64,6 @@ bool ChessPiece::isMoveValid(const ChessPiece& piece, const ChessPiece& targetPi
     if(piece.getType() == PieceType::Pawn){
         int deltaRank = (piece.getColor() == ChessPieceColor::White) ? 1 : -1;
 
-        std::cout << "Dziala ta funkcja" << std::endl;
-
         // Sprawdź, czy ruch pionka jest dozwolony o jedno pole do przodu
         if (targetPiece.getPosition()[1] == piece.getPosition()[1] + deltaRank &&
             targetPiece.getPosition()[0] == piece.getPosition()[0] &&

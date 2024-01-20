@@ -188,12 +188,12 @@ bool ChessBoard::isStraightMoveValid(const std::string& from, const std::string&
         }
 
         // Check if there is a piece in the current square
-        if (getChessPieceAt(std::string(1, file) + std::string(1, rank))) {
-            return true;  // Piece in the path
+        if (file != toFile && rank != toRank && getChessPieceAt(std::string(1, file) + std::string(1, rank))) {
+            return false;  // Piece in the path
         }
     }
 
-    return false;  // No piece in the path
+    return true;  // No piece in the path
 }
 
 bool ChessBoard::isDiagonalMoveValid(const std::string& from, const std::string& to) const {
@@ -223,19 +223,109 @@ bool ChessBoard::isDiagonalMoveValid(const std::string& from, const std::string&
 
         // Sprawdź, czy pole jest w granicach szachownicy
         if (file < 'A' || file > 'H' || rank < '1' || rank > '8') {
-            return false;  // Poza granicami
+            return false;  // Out of bounds
         }
 
-        // Sprawdź, czy na polu znajduje się figura
-        if (getChessPieceAt(std::string(1, file) + std::string(1, rank))) {
-            if (file == toFile && rank == toRank) {
-                return true;  // Doszliśmy do celu bez przeszkód
-            } else {
-                return false;  // Figura na drodze
+        // Check if there is a piece in the current square
+        if (file != toFile && rank != toRank && getChessPieceAt(std::string(1, file) + std::string(1, rank))) {
+            return false;  // Piece in the path
+        }
+    }
+
+    return true;  // No piece in the path
+}
+
+bool ChessBoard::isInCheck(ChessPieceColor color) const {
+    std::optional<std::reference_wrapper<const ChessPiece>> kingOpt = findKing(color);
+
+    if (!kingOpt.has_value()) {
+        return false;
+    }
+
+    const ChessPiece& king = *kingOpt;
+
+    const std::string kingPosition = king.getPosition();
+
+    // Check for diagonal threats (queens, bishops)
+    for (const auto& piece : board_) {
+        if (piece.getColor() != color) {
+            if (isDiagonalMoveValid(piece.getPosition(), kingPosition)) {
+                if (!isSquareBlocked(piece.getPosition(), kingPosition)) {
+                    return true; // There is a diagonal threat
+                }
             }
         }
     }
 
-    return true;  // Brak figury na drodze
+    // Check for straight threats (queens, rooks)
+    for (const auto& piece : board_) {
+        if (piece.getColor() != color) {
+            if (isStraightMoveValid(piece.getPosition(), kingPosition)) {
+                if (!isSquareBlocked(piece.getPosition(), kingPosition)) {
+                    return true; // There is a straight threat
+                }
+            }
+        }
+    }
+
+    // Check for knight threats
+    for (const auto& piece : board_) {
+        if (piece.getColor() != color && piece.getType() == PieceType::Knight) {
+            if (isKnightMoveValid(piece.getPosition(), kingPosition)) {
+                return true; // There is a knight threat
+            }
+        }
+    }
+
+    // No threats found
+    return false;
 }
 
+bool ChessBoard::isSquareBlocked(const std::string& from, const std::string& to) const {
+    int fromRank = from[1] - '1';
+    int fromFile = from[0] - 'a';
+    int toRank = to[1] - '1';
+    int toFile = to[0] - 'a';
+
+    int rankDelta = toRank - fromRank;
+    int fileDelta = toFile - fromFile;
+
+    int rankDirection = (rankDelta > 0) ? 1 : (rankDelta < 0) ? -1 : 0;
+    int fileDirection = (fileDelta > 0) ? 1 : (fileDelta < 0) ? -1 : 0;
+
+    int currentRank = fromRank + rankDirection;
+    int currentFile = fromFile + fileDirection;
+
+    while (currentRank != toRank || currentFile != toFile) {
+        if (getChessPieceAt(std::string(1, static_cast<char>('a' + currentFile)) + std::to_string(1 + currentRank))) {
+            return true; // Square is blocked
+        }
+
+        currentRank += rankDirection;
+        currentFile += fileDirection;
+    }
+
+    return false; // Square is not blocked
+}
+
+bool ChessBoard::isKnightMoveValid(const std::string& from, const std::string& to) const {
+    int fromRank = from[1] - '1';
+    int fromFile = from[0] - 'a';
+    int toRank = to[1] - '1';
+    int toFile = to[0] - 'a';
+
+    int rankDelta = std::abs(toRank - fromRank);
+    int fileDelta = std::abs(toFile - fromFile);
+
+    return (rankDelta == 2 && fileDelta == 1) || (rankDelta == 1 && fileDelta == 2);
+}
+
+std::optional<std::reference_wrapper<const ChessPiece>> ChessBoard::findKing(ChessPieceColor color) const {
+    for (const ChessPiece& piece : board_) {
+        if (piece.getType() == PieceType::King && piece.getColor() == color) {
+            return std::ref(piece);
+        }
+    }
+
+    return std::nullopt;
+}
