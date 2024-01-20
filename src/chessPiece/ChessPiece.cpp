@@ -97,7 +97,7 @@ bool ChessPiece::isMoveValid(const ChessPiece& piece, const ChessPiece& targetPi
         int toFile = targetPiece.getPosition()[0];
         int toRank = targetPiece.getPosition()[1];
 
-        if ((fromFile == toFile && fromRank != toRank) || (fromRank == toRank && fromFile != toFile)) {
+        if (((fromFile == toFile && fromRank != toRank) || (fromRank == toRank && fromFile != toFile)) && (targetPiece.getType() != PieceType::King)) {
             return board.isStraightMoveValid(piece.getPosition(), targetPiece.getPosition());
         } else {
             return false;
@@ -109,16 +109,24 @@ bool ChessPiece::isMoveValid(const ChessPiece& piece, const ChessPiece& targetPi
         int toFile = targetPiece.getPosition()[0];
         int toRank = targetPiece.getPosition()[1];
 
-        if (std::abs(toFile - fromFile) == std::abs(toRank - fromRank)) {
+        if ((std::abs(toFile - fromFile) == std::abs(toRank - fromRank)) && (targetPiece.getType() != PieceType::King)) {
             return board.isDiagonalMoveValid(piece.getPosition(), targetPiece.getPosition());
         } else {
             // Invalid bishop move
             return false;
         }
     } else if (getType() == PieceType::Queen) {
-            // Dla królowej, sprawdź zarówno prosty, jak i ukosny ruch, ale bez mieszania ich
-            return (board.isStraightMoveValid(piece.getPosition(), targetPiece.getPosition()) && !board.isDiagonalMoveValid(piece.getPosition(), targetPiece.getPosition())) ||
-                   (board.isDiagonalMoveValid(piece.getPosition(), targetPiece.getPosition()) && !board.isStraightMoveValid(piece.getPosition(), targetPiece.getPosition()));
+        // Dla królowej, sprawdź zarówno prosty, jak i ukosny ruch, ale bez mieszania ich
+        return board.isStraightMoveValid(piece.getPosition(), targetPiece.getPosition()) ||
+               board.isDiagonalMoveValid(piece.getPosition(), targetPiece.getPosition());
+    } else if (getType() == PieceType::Knight) {
+        // Ruch koniem
+        int fileDiff = std::abs(targetPiece.getPosition()[0] - piece.getPosition()[0]);
+        int rankDiff = std::abs(targetPiece.getPosition()[1] - piece.getPosition()[1]);
+
+        return ((fileDiff == 2 && rankDiff == 1) || (fileDiff == 1 && rankDiff == 2)) &&
+                                                   (targetPiece.getType() != PieceType::King) && // Dodatkowy warunek - nie możemy zbić króla
+                                                   ((targetPiece.getType() == PieceType::None || targetPiece.getColor() != piece.getColor()));
     }
 
     return false;
