@@ -11,10 +11,11 @@ private:
 
     Player whitePlayer_;
     Player blackPlayer_;
+    Player currentPlayer_;
 
 public:
     ChessBoard(Player whiteColor, Player blackColor)
-            : whitePlayer_(whiteColor), blackPlayer_(blackColor) {
+            : whitePlayer_(whiteColor), blackPlayer_(blackColor), currentPlayer_(whiteColor) {
         initializeBoard();
     }
 
@@ -42,5 +43,11 @@ public:
 
     bool isSquareBlocked(const std::string &from, const std::string &to) const;
 
+    void makeMove();
+
+    void switchPlayer();
+
     std::optional<std::reference_wrapper<const ChessPiece>> findKing(ChessPieceColor color) const;
+
+    void clearTerminal();
 };

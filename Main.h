@@ -9,6 +9,7 @@
 #include <iomanip>
 #include <optional>
 #include <cmath>
+#include <cstdlib>
 
 enum class ChessPieceColor{
     White,

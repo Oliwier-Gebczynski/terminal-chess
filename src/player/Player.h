@@ -7,4 +7,6 @@ private:
 
 public:
     Player(ChessPieceColor playerColor) : playerColor_(playerColor) {}
+
+    ChessPieceColor getColor();
 };

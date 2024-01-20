@@ -321,6 +321,7 @@ bool ChessBoard::isKnightMoveValid(const std::string& from, const std::string& t
 }
 
 std::optional<std::reference_wrapper<const ChessPiece>> ChessBoard::findKing(ChessPieceColor color) const {
+    // Znajdź króla danego koloru na planszy
     for (const ChessPiece& piece : board_) {
         if (piece.getType() == PieceType::King && piece.getColor() == color) {
             return std::ref(piece);
@@ -328,4 +329,77 @@ std::optional<std::reference_wrapper<const ChessPiece>> ChessBoard::findKing(Che
     }
 
     return std::nullopt;
+}
+
+void ChessBoard::switchPlayer() {
+    if (currentPlayer_.getColor() == ChessPieceColor::White) {
+        currentPlayer_ = blackPlayer_;
+    } else {
+        currentPlayer_ = whitePlayer_;
+    }
+}
+
+void ChessBoard::clearTerminal() {
+#ifdef _WIN32
+    std::system("cls");
+#else
+    std::system("clear");
+#endif
+
+
+}
+
+void ChessBoard::makeMove() {
+    std::cout << "Current player: ";
+    if (currentPlayer_.getColor() == ChessPieceColor::White) {
+        std::cout << "White";
+    } else {
+        std::cout << "Black";
+    }
+    std::cout << std::endl;
+
+    // Check for check and display a message
+    if (isInCheck(currentPlayer_.getColor())) {
+        std::cout << "CHECK!" << std::endl;
+    }
+
+    displayBoard();
+
+    std::string from, to;
+    ChessPieceColor currentPlayerColor = currentPlayer_.getColor();
+
+    // Prompt for a move until a valid move is entered
+    do {
+        std::cout << "Enter your move (E4, F5): ";
+        std::cin >> from >> to;
+
+        // Check if the piece at the 'from' position has the correct color
+        auto pieceAtFrom = getChessPieceAt(from);
+        if (!pieceAtFrom.has_value() || pieceAtFrom.value().get().getColor() != currentPlayerColor) {
+            std::cout << "Invalid move. Try again." << std::endl;
+
+            // Clear the input buffer to avoid infinite loop on invalid input
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        } else {
+            break;
+        }
+    } while (true);
+
+    if (isMoveValid(from, to)) {
+        movePiece(from, to);
+
+        // Clear the terminal using the custom function
+        clearTerminal();
+
+        // Check for check after the move and display a message
+        if (isInCheck(currentPlayer_.getColor())) {
+            std::cout << "CHECK!" << std::endl;
+        }
+
+        displayBoard();
+        switchPlayer();
+    } else {
+        std::cout << "Invalid move." << std::endl;
+    }
 }
